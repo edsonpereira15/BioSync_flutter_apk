@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // NOVO: Import do Firebase Auth
-
 // Import das páginas para navegação
 import 'agendamento_page.dart';
 import 'pontoDescarte_page.dart';
@@ -38,7 +37,7 @@ class _HomePageState extends State<HomePage> {
     Causa(
         name: 'Ecobarreira',
         logo: 'assets/ecobarreira.png',
-        url: 'https://ecobarreira.com.br'),
+        url: 'https://www.ecobarreiradiluvio.com.br/'),
     Causa(
         name: 'SOS Amazônia',
         logo: 'assets/SOS-Amazonia-logo.png',

@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // NOVO: Pacote de autenticação
 import 'firebase_options.dart';
-
 // Import das Páginas (Ajustado conforme sua pasta)
 import 'pages/login_page.dart';
 import 'pages/cadastro_page.dart';

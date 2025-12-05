@@ -36,7 +36,7 @@ class _CadastroPontoPageState extends State<CadastroPontoPage> {
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<String>(
-              value: selectedCategory,
+              initialValue: selectedCategory,
               hint: const Text('Categoria Principal'),
               items: categorias.map((cat) {
                 return DropdownMenuItem(value: cat, child: Text(cat));

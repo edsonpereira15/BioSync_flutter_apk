@@ -9,6 +9,7 @@ import 'pages/cadastro_page.dart';
 import 'pages/agendamento_page.dart';
 import 'pages/pontoDescarte_page.dart';
 import 'pages/home_page.dart';
+import 'pages/perfil_page.dart';
 // Import dos Formulários
 import 'pages/Forms/cadastro_usuario_page.dart';
 import 'pages/Forms/cadastro_ponto_page.dart';
@@ -47,14 +48,14 @@ class BiosyncApp extends StatelessWidget {
         // Tema padrão para botões
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            backgroundColor: Color.fromARGB(255, 80, 225, 138),
-            foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)
-          ),
+              backgroundColor: Color.fromARGB(255, 80, 225, 138),
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              textStyle:
+                  const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
         ),
         // Tema padrão para formulários
         inputDecorationTheme: InputDecorationTheme(
@@ -74,13 +75,16 @@ class BiosyncApp extends StatelessWidget {
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(color: Color.fromARGB(255, 217, 217, 217)),
+            borderSide:
+                const BorderSide(color: Color.fromARGB(255, 217, 217, 217)),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(color: Color.fromARGB(255, 80, 225, 138), width: 2),
+            borderSide: const BorderSide(
+                color: Color.fromARGB(255, 80, 225, 138), width: 2),
           ),
-          contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         ),
       ),
 
@@ -92,6 +96,8 @@ class BiosyncApp extends StatelessWidget {
         AgendamentoPage.routePath: (context) => const AgendamentoPage(),
         PontoDescartePage.routePath: (context) => const PontoDescartePage(),
         HomePage.routePath: (context) => const HomePage(),
+        // Perfil (página de perfil do usuário)
+        '/perfil': (context) => const ProfilePage1(),
 
         // Formulários de Cadastro
         // NOTE: Mantenha esses caminhos literais para simplificar

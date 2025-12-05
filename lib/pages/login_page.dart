@@ -98,63 +98,78 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).colorScheme.primary;
+    final screenSize = MediaQuery.of(context).size;
+    final isSmallScreen =
+        screenSize.width < 350; // Detecta relógio/mobile pequeno
+    final isWearOs = screenSize.width < 300 &&
+        screenSize.height < 350; // Detecta Wear OS round
 
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24.0),
+            padding: EdgeInsets.symmetric(
+              horizontal: isWearOs ? 12 : (isSmallScreen ? 16 : 24),
+              vertical: isWearOs ? 8 : (isSmallScreen ? 16 : 24),
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // ... (Seus TÍTULOS e CAMPOS DE TEXTO permanecem iguais) ...
                 // --- TÍTULOS ---
-                const Text(
+                Text(
                   'Bem-vindo!',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 32,
+                    fontSize: isWearOs ? 18 : (isSmallScreen ? 24 : 32),
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF101518),
+                    color: const Color(0xFF101518),
                   ),
                 ),
-                const SizedBox(height: 8),
-                const Text(
-                  'Entre na sua conta para continuar',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Color(0xFF57636C),
+                SizedBox(height: isWearOs ? 4 : 8),
+                if (!isWearOs)
+                  const Text(
+                    'Entre na sua conta para continuar',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Color(0xFF57636C),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 32),
+                SizedBox(height: isWearOs ? 12 : 32),
 
                 // --- CAMPOS DE TEXTO ---
                 TextFormField(
-                  style: const TextStyle(color: Colors.black54),
+                  style: TextStyle(
+                      fontSize: isWearOs ? 12 : 14, color: Colors.black54),
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'E-mail',
-                    hintText: 'Digite seu e-mail',
-                    prefixIcon: Icon(Icons.email_outlined),
+                    hintText: isWearOs ? 'Email' : 'Digite seu e-mail',
+                    prefixIcon: const Icon(Icons.email_outlined),
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: isWearOs ? 4 : 12),
                   ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: isWearOs ? 8 : 16),
                 TextFormField(
-                  style: const TextStyle(color: Colors.black54),
+                  style: TextStyle(
+                      fontSize: isWearOs ? 12 : 14, color: Colors.black54),
                   controller: _passwordController,
                   obscureText: !_passwordVisible,
                   decoration: InputDecoration(
                     labelText: 'Senha',
-                    hintText: 'Digite sua senha',
+                    hintText: isWearOs ? 'Senha' : 'Digite sua senha',
                     prefixIcon: const Icon(Icons.lock_outline),
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: isWearOs ? 4 : 12),
                     suffixIcon: IconButton(
                       icon: Icon(
                         _passwordVisible
                             ? Icons.visibility_outlined
                             : Icons.visibility_off_outlined,
+                        size: isWearOs ? 18 : 24,
                       ),
                       onPressed: () {
                         setState(() {
@@ -164,45 +179,45 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: isWearOs ? 8 : 16),
 
-                // --- LEMBRAR DE MIM & ESQUECI SENHA ---
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Checkbox(
-                          value: _rememberMe,
-                          activeColor: primaryColor,
-                          onChanged: (value) {
-                            setState(() {
-                              _rememberMe = value ?? false;
-                            });
-                          },
-                        ),
-                        const Text('Lembrar de mim'),
-                      ],
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        // Lógica de esqueceu a senha
-                      },
-                      child: const Text(
-                        'Esqueceu a senha?',
-                        style: TextStyle(color: Color(0xFF57636C)),
+                // --- LEMBRAR DE MIM & ESQUECI SENHA (oculto em Wear OS) ---
+                if (!isWearOs)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Checkbox(
+                            value: _rememberMe,
+                            activeColor: primaryColor,
+                            onChanged: (value) {
+                              setState(() {
+                                _rememberMe = value ?? false;
+                              });
+                            },
+                          ),
+                          const Text('Lembrar de mim'),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24),
+                      TextButton(
+                        onPressed: () {
+                          // Lógica de esqueceu a senha
+                        },
+                        child: const Text(
+                          'Esqueceu a senha?',
+                          style: TextStyle(color: Color(0xFF57636C)),
+                        ),
+                      ),
+                    ],
+                  ),
+                SizedBox(height: isWearOs ? 12 : 24),
 
                 // --- BOTÃO ENTRAR (Integrado com Firebase) ---
                 SizedBox(
                   width: double.infinity,
-                  height: 50,
+                  height: isWearOs ? 40 : 50,
                   child: ElevatedButton(
-                    // NOVO: Chama a função de autenticação
                     onPressed: _isLoading ? null : _signInWithEmailAndPassword,
                     child: _isLoading
                         ? const SizedBox(
@@ -213,82 +228,90 @@ class _LoginPageState extends State<LoginPage> {
                               strokeWidth: 2,
                             ),
                           )
-                        : const Text('Entrar'),
+                        : Text(
+                            isWearOs ? 'Entrar' : 'Entrar',
+                            style: TextStyle(fontSize: isWearOs ? 12 : 16),
+                          ),
                   ),
                 ),
 
-                const SizedBox(height: 32),
+                if (!isWearOs) ...[
+                  SizedBox(height: isSmallScreen ? 16 : 32),
 
-                // --- DIVISOR "OU CONTINUE COM" ---
-                const Row(
-                  children: [
-                    Expanded(child: Divider()),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      child: Text('ou continue com',
-                          style: TextStyle(color: Colors.grey)),
-                    ),
-                    Expanded(child: Divider()),
-                  ],
-                ),
-                const SizedBox(height: 24),
+                  // --- DIVISOR "OU CONTINUE COM" ---
+                  const Row(
+                    children: [
+                      Expanded(child: Divider()),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        child: Text('ou continue com',
+                            style: TextStyle(color: Colors.grey)),
+                      ),
+                      Expanded(child: Divider()),
+                    ],
+                  ),
+                  SizedBox(height: isSmallScreen ? 12 : 24),
 
-                // --- BOTÕES SOCIAIS ---
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _socialButton(
-                      imagePath: 'assets/google.png',
-                      onTap: () {
-                        // Implementar Google Sign-In aqui
-                        _showSnackBar(
-                            'Google Sign-In em desenvolvimento', Colors.black87);
-                      },
-                    ),
-                    _socialButton(
-                      imagePath: 'assets/linkedin.png',
-                      onTap: () => _showSnackBar(
-                          'LinkedIn Sign-In em desenvolvimento', Colors.black87),
-                    ),
-                    _socialButton(
-                      imagePath: 'assets/github-logo.png',
-                      onTap: () => _showSnackBar(
-                          'Github Sign-In em desenvolvimento', Colors.black87),
-                    ),
-                    _socialButton(
-                      imagePath: 'assets/instagram.png',
-                      onTap: () => _showSnackBar(
-                          'Instagram Sign-In em desenvolvimento', Colors.black87),
-                    ),
-                  ],
-                ),
+                  // --- BOTÕES SOCIAIS ---
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _socialButton(
+                        imagePath: 'assets/google.png',
+                        onTap: () {
+                          // Implementar Google Sign-In aqui
+                          _showSnackBar('Google Sign-In em desenvolvimento',
+                              Colors.black87);
+                        },
+                      ),
+                      _socialButton(
+                        imagePath: 'assets/linkedin.png',
+                        onTap: () => _showSnackBar(
+                            'LinkedIn Sign-In em desenvolvimento',
+                            Colors.black87),
+                      ),
+                      _socialButton(
+                        imagePath: 'assets/github-logo.png',
+                        onTap: () => _showSnackBar(
+                            'Github Sign-In em desenvolvimento',
+                            Colors.black87),
+                      ),
+                      _socialButton(
+                        imagePath: 'assets/instagram.png',
+                        onTap: () => _showSnackBar(
+                            'Instagram Sign-In em desenvolvimento',
+                            Colors.black87),
+                      ),
+                    ],
+                  ),
 
-                const SizedBox(height: 32),
+                  SizedBox(height: isSmallScreen ? 16 : 32),
 
-                // --- RODAPÉ CADASTRE-SE ---
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      'Não tem uma conta? ',
-                      style: TextStyle(color: Color(0xFF57636C)),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        // Navegar para a tela de menu de Cadastro usando a rota nomeada
-                        Navigator.pushNamed(context, CadastroPage.routePath);
-                      },
-                      child: Text(
-                        'Cadastre-se',
-                        style: TextStyle(
-                          color: primaryColor,
-                          fontWeight: FontWeight.bold,
+                  // --- RODAPÉ CADASTRE-SE ---
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'Não tem uma conta? ',
+                        style: TextStyle(color: Color(0xFF57636C)),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          // Navegar para a tela de menu de Cadastro usando a rota nomeada
+                          Navigator.pushNamed(context, CadastroPage.routePath);
+                        },
+                        child: Text(
+                          'Cadastre-se',
+                          style: TextStyle(
+                            color: primaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
+                    ],
+                  ),
+                ],
+                SizedBox(height: isWearOs ? 8 : 20),
               ],
             ),
           ),
@@ -299,8 +322,7 @@ class _LoginPageState extends State<LoginPage> {
 
   // Widget auxiliar para criar os botões sociais (permanece igual)
   Widget _socialButton(
-      {required String imagePath,
-      required VoidCallback onTap}) {
+      {required String imagePath, required VoidCallback onTap}) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
@@ -310,8 +332,16 @@ class _LoginPageState extends State<LoginPage> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Padding(padding: const EdgeInsets.all(12),
-        child: Image.asset(imagePath, fit: BoxFit.contain, errorBuilder: (context, error, StackTrace) => const Icon(Icons.error, color: Color.fromARGB(255, 255, 0, 0),),)),
+        child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Image.asset(
+              imagePath,
+              fit: BoxFit.contain,
+              errorBuilder: (context, error, StackTrace) => const Icon(
+                Icons.error,
+                color: Color.fromARGB(255, 255, 0, 0),
+              ),
+            )),
       ),
     );
   }

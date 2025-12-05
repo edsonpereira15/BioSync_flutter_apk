@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../utils/device_helper.dart';
 
 class AgendamentoPage extends StatefulWidget {
   const AgendamentoPage({super.key});
@@ -14,6 +15,9 @@ class AgendamentoPage extends StatefulWidget {
 class _AgendamentoPageState extends State<AgendamentoPage> {
   // Controladores
   final TextEditingController _searchController = TextEditingController();
+
+  // Variáveis de detecção de dispositivo (para usar em _buildNativeDropdown)
+  late bool _isWear;
 
   // Variáveis de Estado (State)
   int? _selectedDayIndex; // Para controlar qual dia foi clicado no calendário
@@ -68,6 +72,13 @@ class _AgendamentoPageState extends State<AgendamentoPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isWear = DeviceHelper.isWearOS(context);
+    final isSmall = DeviceHelper.isSmallScreen(context);
+    final padding = DeviceHelper.getAdaptivePadding(context);
+    
+    // Salvar em variáveis de classe para usar em métodos auxiliares
+    _isWear = isWear;
+
     // Tema base
     return Scaffold(
       backgroundColor:
@@ -85,46 +96,50 @@ class _AgendamentoPageState extends State<AgendamentoPage> {
           },
         ),
         title: Text(
-          'Agendamento de Coleta',
+          isWear ? 'Agendamento' : 'Agendamento de Coleta',
           style: GoogleFonts.interTight(
             color: Colors.white,
             fontWeight: FontWeight.w600,
-            fontSize: 20,
+            fontSize: isWear ? 14 : 20,
           ),
         ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
+          padding: padding,
           child: Column(
             children: [
               // ---  BARRA DE PESQUISA ---
-              TextFormField(
-                style: const TextStyle(color: Colors.black54, fontSize: 16),
-                controller: _searchController,
-                decoration: InputDecoration(
-                  hintText: 'Pesquisar agendamentos...',
-                  prefixIcon: const Icon(Icons.search),
+              if (!isWear)
+                TextFormField(
+                  style: TextStyle(
+                      color: Colors.black54, fontSize: isSmall ? 14 : 16),
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    hintText: 'Pesquisar agendamentos...',
+                    prefixIcon: const Icon(Icons.search),
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: isWear ? 4 : 8),
+                  ),
                 ),
-              ),
 
-              const SizedBox(height: 16),
+              SizedBox(height: isWear ? 8 : 16),
 
               // --- CALENDÁRIO ---
               Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(isWear ? 8 : 16),
                   border: Border.all(color: Color.fromARGB(255, 80, 225, 138)),
                 ),
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(isWear ? 8 : 16),
                 child: Column(
                   children: [
                     Text(
-                      'Selecione o Mês',
+                      isWear ? 'Mês' : 'Selecione o Mês',
                       style: GoogleFonts.interTight(
-                        fontSize: 16,
+                        fontSize: isWear ? 12 : 16,
                         fontWeight: FontWeight.w500,
                         color: const Color(0xFF666666),
                       ),
@@ -288,7 +303,7 @@ class _AgendamentoPageState extends State<AgendamentoPage> {
               // Botão Agendar
               SizedBox(
                 width: double.infinity,
-                height: 50,
+                height: DeviceHelper.getAdaptiveButtonHeight(context),
                 child: ElevatedButton(
                   onPressed: () {
                     if (_selectedDayIndex != null &&
@@ -311,9 +326,9 @@ class _AgendamentoPageState extends State<AgendamentoPage> {
                     ),
                   ),
                   child: Text(
-                    'Agendar Coleta',
+                    isWear ? 'Agendar' : 'Agendar Coleta',
                     style: GoogleFonts.interTight(
-                      fontSize: 16,
+                      fontSize: isWear ? 12 : 16,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
@@ -321,85 +336,86 @@ class _AgendamentoPageState extends State<AgendamentoPage> {
                 ),
               ),
 
-              const SizedBox(height: 32),
+              SizedBox(height: isWear ? 12 : 32),
 
-              // --- 4. CARD DE AGENDAMENTO CONFIRMADO (Detalhes) ---
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                      color: const Color.fromARGB(255, 217, 217, 217)),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    children: [
-                      // Cabeçalho do Card
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Agendamento Confirmado',
-                            style: GoogleFonts.interTight(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: const Color(0xFF333333),
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              // Lógica de deletar
-                            },
-                            icon: const Icon(Icons.delete,
-                                color: Colors.black54, size: 18),
-                            style: IconButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
+              // --- 4. CARD DE AGENDAMENTO CONFIRMADO (Detalhes) - Ocultado em Wear OS ---
+              if (!isWear)
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                        color: const Color.fromARGB(255, 217, 217, 217)),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: [
+                        // Cabeçalho do Card
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Agendamento Confirmado',
+                              style: GoogleFonts.interTight(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFF333333),
                               ),
-                              padding: const EdgeInsets.all(8),
-                              minimumSize: const Size(32, 32),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                // Lógica de deletar
+                              },
+                              icon: const Icon(Icons.delete,
+                                  color: Colors.black54, size: 18),
+                              style: IconButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                padding: const EdgeInsets.all(8),
+                                minimumSize: const Size(32, 32),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const Divider(color: Color(0xFFDDDDDD)),
+                        const SizedBox(height: 8),
+
+                        // Detalhes (Linha a Linha)
+                        _buildDetailRow('Data:', '15/12/2024'),
+                        const SizedBox(height: 12),
+                        _buildDetailRow('Coletor:', 'João Silva'),
+                        const SizedBox(height: 12),
+                        _buildDetailRow('Material:', 'Papel'),
+                        const SizedBox(height: 12),
+                        _buildDetailRow('Horário:', '08:00 - 10:00'),
+                        const SizedBox(height: 12),
+                        _buildDetailRow('Endereço:', 'Rua das Flores, 123'),
+                        const SizedBox(height: 16),
+
+                        // Status Badge
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          decoration: BoxDecoration(
+                            color: const Color.fromARGB(96, 0, 0, 0),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            'Status: Agendado',
+                            style: GoogleFonts.inter(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
-                        ],
-                      ),
-                      const Divider(color: Color(0xFFDDDDDD)),
-                      const SizedBox(height: 8),
-
-                      // Detalhes (Linha a Linha)
-                      _buildDetailRow('Data:', '15/12/2024'),
-                      const SizedBox(height: 12),
-                      _buildDetailRow('Coletor:', 'João Silva'),
-                      const SizedBox(height: 12),
-                      _buildDetailRow('Material:', 'Papel'),
-                      const SizedBox(height: 12),
-                      _buildDetailRow('Horário:', '08:00 - 10:00'),
-                      const SizedBox(height: 12),
-                      _buildDetailRow('Endereço:', 'Rua das Flores, 123'),
-                      const SizedBox(height: 16),
-
-                      // Status Badge
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(96, 0, 0, 0),
-                          borderRadius: BorderRadius.circular(8),
                         ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Status: Agendado',
-                          style: GoogleFonts.inter(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
         ),
@@ -417,7 +433,7 @@ class _AgendamentoPageState extends State<AgendamentoPage> {
     required Function(String?) onChanged,
   }) {
     return DropdownButtonFormField<String>(
-      value: value,
+      initialValue: value,
       isExpanded: true,
       dropdownColor: Colors.white,
       icon: const Icon(Icons.arrow_drop_down, color: Colors.black54),
@@ -450,6 +466,7 @@ class _AgendamentoPageState extends State<AgendamentoPage> {
         return DropdownMenuItem(
           value: item,
           child: Text(
+      onChanged: onChanged,
             item,
             style: GoogleFonts.inter(
               color: isSelected
@@ -476,8 +493,7 @@ class _AgendamentoPageState extends State<AgendamentoPage> {
           );
         }).toList();
       },
-      onChanged: onChanged,
-    );
+      );
   }
 
   // Widget para as linhas de detalhe do Card
@@ -496,7 +512,6 @@ class _AgendamentoPageState extends State<AgendamentoPage> {
           value,
           style: GoogleFonts.inter(
             color: Colors.black54,
-            fontWeight: FontWeight.w500,
           ),
         ),
       ],

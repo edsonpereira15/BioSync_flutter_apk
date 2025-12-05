@@ -1,17 +1,30 @@
-# biosync
+# BioSync
 
-A new Flutter project.
+O projeto BioSync vis a integarção das pessoas que compõem nossa sociedade através de práticas sustentáveis.
+Para ajudar em um problema que aflinge a tantos municípios por falta de concientização própria e às vezes por falta de políticas públicas, criamos um caminho para unir as pessoas por uma só causa.
+Quando alguém se regitra há 3 opções disponívei e esse é o tripé de sustentação do projeto:
 
-## Getting Started
+- Morador
+- Coletor
+- Ponto de descarte
 
-This project is a starting point for a Flutter application.
+Visamos conectar os moradores aos Coletores para que a coleta de materiais recicláveis ocorra conforme a disponibilidade. O Coletor por sua vez faz a etrega no Ponto de descarte adequado após a realização da Coleta.
+Tanto Moradores quanto Coletores podem ver os pontos de descarte registrados, e para os Coletores essa informação serve para guiar seu caminho da melhor forma de modo que não vá em um local fechado naquele horário. 
+O Morador faz sua parte mantendo a cidade limpa ao entregar o reciclável ao agente que auxilia na manutenção do hábito sustentável que é o Coletor e quando o ponto de descarte recebe o material gera-se a certeza de que o caminho para um futuro colaborativo foi aberto.
 
-A few resources to get you started if this is your first Flutter project:
+O ciclo portanto é:
+                                                                    |
+                                                                   /|\
+                                                                  /   \
+                                                                  MORADOR
+                                                                /       \
+                                                               /         \
+                                                              /           \
+                                                             /             \
+                                                            /               \
+                                                          PONTO DE ------COLETOR
+                                                          DESCARTE
+Com o Framework Flutter criamos uma aplicação para ayender ao objeto exposto, ainda não está completa, mas já permite entender o que pretendemos entregar no final.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-# BioSyncflutter
+# BioSyncflutterAPKc
